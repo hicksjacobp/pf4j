@@ -21,7 +21,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * This class extracts the containt of the plugin archive into a directory.

@@ -18,7 +18,6 @@ import java.net.URLClassLoader;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * One instance of this class should be created by plugin manager for every available plug-in.
@@ -97,7 +96,7 @@ public class PluginClassLoader extends URLClassLoader {
         	}
         }
 
-        log.debug("Couldn't find class '%s' in plugin classpath. Delegating to parent");
+        log.debug(String.format("Couldn't find class '%s' in plugin classpath. Delegating to parent", className));
 
         // use the standard URLClassLoader (which follows normal parent delegation)
         return super.loadClass(className);

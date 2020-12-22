@@ -16,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * The default implementation for PluginFactory.

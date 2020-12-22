@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.DirectoryFileFilter;
 import ro.fortsoft.pf4j.util.JarFileFilter;

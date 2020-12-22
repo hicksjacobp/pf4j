@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * The default implementation for ExtensionFinder.

@@ -20,7 +20,6 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.StringUtils;
 
