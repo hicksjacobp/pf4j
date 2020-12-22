@@ -15,8 +15,8 @@ package ro.fortsoft.pf4j;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.DirectedGraph;
 
@@ -25,7 +25,7 @@ import ro.fortsoft.pf4j.util.DirectedGraph;
  */
 class DependencyResolver {
 
-	private static final Logger log = LoggerFactory.getLogger(DependencyResolver.class);
+	private static final Logger log = Logger.getLogger(DependencyResolver.class);
 	
     private List<PluginWrapper> plugins;
 
@@ -51,14 +51,14 @@ class DependencyResolver {
 			}
 		}
 
-		log.debug("Graph: {}", graph);
+		log.debug(String.format("Graph: %s", graph));
 		List<String> pluginsId = graph.reverseTopologicalSort();
 
 		if (pluginsId == null) {
 			throw new CyclicDependencyException("Cyclic dependences !!!" + graph.toString());
 		}
 
-		log.debug("Plugins order: {}", pluginsId);
+		log.debug(String.format("Plugins order: %s", pluginsId));
 		List<PluginWrapper> sortedPlugins = new ArrayList<PluginWrapper>();
 		for (String pluginId : pluginsId) {
 			sortedPlugins.add(getPlugin(pluginId));

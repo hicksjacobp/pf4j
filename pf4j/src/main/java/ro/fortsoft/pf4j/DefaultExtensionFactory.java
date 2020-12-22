@@ -12,8 +12,8 @@
  */
 package ro.fortsoft.pf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * The default implementation for ExtensionFactory.
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultExtensionFactory implements ExtensionFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultExtensionFactory.class);
+    private static final Logger log = Logger.getLogger(DefaultExtensionFactory.class);
 
     /**
      * Creates an extension instance. If an error occurs than that error is logged and the method returns null.
@@ -32,7 +32,7 @@ public class DefaultExtensionFactory implements ExtensionFactory {
      */
     @Override
     public Object create(Class<?> extensionClass) {
-        log.debug("Create instance for extension '{}'", extensionClass.getName());
+        log.debug(String.format("Create instance for extension '%s'", extensionClass.getName()));
         try {
             return extensionClass.newInstance();
         } catch (Exception e) {

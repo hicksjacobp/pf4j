@@ -12,13 +12,13 @@
  */
 package ro.fortsoft.pf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * One instance of this class should be created by plugin manager for every available plug-in.
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class PluginClassLoader extends URLClassLoader {
 
-    private static final Logger log = LoggerFactory.getLogger(PluginClassLoader.class);
+    private static final Logger log = Logger.getLogger(PluginClassLoader.class);
 
 	private static final String PLUGIN_PACKAGE_PREFIX = "ro.fortsoft.pf4j.";
 
@@ -55,10 +55,10 @@ public class PluginClassLoader extends URLClassLoader {
      */
 	@Override
     public Class<?> loadClass(String className) throws ClassNotFoundException {
-        log.debug("Received request to load class '{}'", className);
+        log.debug(String.format("Received request to load class '%s'", className));
         // if the class it's a part of the plugin engine use parent class loader
         if (className.startsWith(PLUGIN_PACKAGE_PREFIX)) {
-            log.debug("Delegate the loading of class '{}' to parent", className);
+            log.debug(String.format("Delegate the loading of class '%s' to parent", className));
             try {
                 return getClass().getClassLoader().loadClass(className);
             } catch (ClassNotFoundException e) {
@@ -72,21 +72,21 @@ public class PluginClassLoader extends URLClassLoader {
         // second check whether it's already been loaded
         Class<?> clazz = findLoadedClass(className);
         if (clazz != null) {
-            log.debug("Found loaded class '{}'", className);
+            log.debug(String.format("Found loaded class '%s'", className));
         	return clazz;
         }
 
         // nope, try to load locally
         try {
             clazz = findClass(className);
-            log.debug("Found class '{}' in plugin classpath", className);
+            log.debug(String.format("Found class '%s' in plugin classpath", className));
             return clazz;
         } catch (ClassNotFoundException e) {
         	// try next step
         }
 
         // look in dependencies
-        log.debug("Look in dependencies for class '{}'", className);
+        log.debug(String.format("Look in dependencies for class '%s'", className));
         List<PluginDependency> dependencies = pluginDescriptor.getDependencies();
         for (PluginDependency dependency : dependencies) {
         	PluginClassLoader classLoader = pluginManager.getPluginClassLoader(dependency.getPluginId());
@@ -97,7 +97,7 @@ public class PluginClassLoader extends URLClassLoader {
         	}
         }
 
-        log.debug("Couldn't find class '{}' in plugin classpath. Delegating to parent");
+        log.debug("Couldn't find class '%s' in plugin classpath. Delegating to parent");
 
         // use the standard URLClassLoader (which follows normal parent delegation)
         return super.loadClass(className);
@@ -112,14 +112,14 @@ public class PluginClassLoader extends URLClassLoader {
      */
     @Override
     public URL getResource(String name) {
-        log.debug("Trying to find resource '{}' in plugin classpath", name);
+        log.debug(String.format("Trying to find resource '%s' in plugin classpath", name));
         URL url = findResource(name);
         if (url != null) {
-            log.debug("Found resource '{}' in plugin classpath", name);
+            log.debug(String.format("Found resource '%s' in plugin classpath", name));
             return url;
         }
 
-        log.debug("Couldn't find resource '{}' in plugin classpath. Delegating to parent");
+        log.debug("Couldn't find resource '%s' in plugin classpath. Delegating to parent");
 
         return super.getResource(name);
     }

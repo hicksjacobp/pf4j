@@ -18,8 +18,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.DirectoryFileFilter;
 import ro.fortsoft.pf4j.util.JarFileFilter;
@@ -34,7 +34,7 @@ import ro.fortsoft.pf4j.util.JarFileFilter;
  */
 class PluginLoader {
 
-	private static final Logger log = LoggerFactory.getLogger(PluginLoader.class);
+	private static final Logger log = Logger.getLogger(PluginLoader.class);
 
     /*
      * The plugin repository.
@@ -50,7 +50,7 @@ class PluginLoader {
 
         ClassLoader parent = getClass().getClassLoader();
         pluginClassLoader = new PluginClassLoader(pluginManager, pluginDescriptor, parent);
-        log.debug("Created class loader '{}'", pluginClassLoader);
+        log.debug(String.format("Created class loader '%s'", pluginClassLoader));
     }
 
     public File getPluginRepository() {
@@ -78,11 +78,11 @@ class PluginLoader {
 	        File file = new File(pluginRepository, classesDirectory).getAbsoluteFile();
 
 	        if (file.exists() && file.isDirectory()) {
-	            log.debug("Found '{}' directory", file.getPath());
+	            log.debug(String.format("Found '%s' directory", file.getPath()));
 
 	            try {
 	                pluginClassLoader.addURL(file.toURI().toURL());
-	                log.debug("Added '{}' to the class loader path", file);
+	                log.debug(String.format("Added '%s' to the class loader path", file));
 	            } catch (MalformedURLException e) {
 	                e.printStackTrace();
 	                log.error(e.getMessage(), e);
@@ -111,7 +111,7 @@ class PluginLoader {
 	        for (File jar : jars) {
 	            try {
 	                pluginClassLoader.addURL(jar.toURI().toURL());
-	                log.debug("Added '{}' to the class loader path", jar);
+	                log.debug(String.format("Added '%s' to the class loader path", jar));
 	            } catch (MalformedURLException e) {
 	                e.printStackTrace();
 	                log.error(e.getMessage(), e);

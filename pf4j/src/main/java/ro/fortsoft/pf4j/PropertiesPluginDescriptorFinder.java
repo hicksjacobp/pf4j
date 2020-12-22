@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.StringUtils;
 
@@ -31,7 +31,7 @@ import ro.fortsoft.pf4j.util.StringUtils;
  */
 public class PropertiesPluginDescriptorFinder implements PluginDescriptorFinder {
 
-	private static final Logger log = LoggerFactory.getLogger(PropertiesPluginDescriptorFinder.class);
+	private static final Logger log = Logger.getLogger(PropertiesPluginDescriptorFinder.class);
 
 	private static final String DEFAULT_PROPERTIES_FILE_NAME = "plugin.properties";
 
@@ -48,7 +48,7 @@ public class PropertiesPluginDescriptorFinder implements PluginDescriptorFinder 
 	@Override
 	public PluginDescriptor find(File pluginRepository) throws PluginException {
         File propertiesFile = new File(pluginRepository, propertiesFileName);
-        log.debug("Lookup plugin descriptor in '{}'", propertiesFile);
+        log.debug(String.format("Lookup plugin descriptor in '{}'", propertiesFile));
         if (!propertiesFile.exists()) {
             throw new PluginException("Cannot find '" + propertiesFile + "' file");
         }

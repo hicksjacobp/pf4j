@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 import ro.fortsoft.pf4j.util.StringUtils;
 
@@ -31,7 +31,7 @@ import ro.fortsoft.pf4j.util.StringUtils;
  */
 public class ManifestPluginDescriptorFinder implements PluginDescriptorFinder {
 
-	private static final Logger log = LoggerFactory.getLogger(ManifestPluginDescriptorFinder.class);
+	private static final Logger log = Logger.getLogger(ManifestPluginDescriptorFinder.class);
 
 	private PluginClasspath pluginClasspath;
 
@@ -44,7 +44,7 @@ public class ManifestPluginDescriptorFinder implements PluginDescriptorFinder {
     	// TODO it's ok with first classes directory? Another idea is to specify in PluginClasspath the folder.
 		String classes = pluginClasspath.getClassesDirectories().get(0);
         File manifestFile = new File(pluginRepository, classes + "/META-INF/MANIFEST.MF");
-        log.debug("Lookup plugin descriptor in '{}'", manifestFile);
+        log.debug(String.format("Lookup plugin descriptor in '%s'", manifestFile));
         if (!manifestFile.exists()) {
             throw new PluginException("Cannot find '" + manifestFile + "' file");
         }

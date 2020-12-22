@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * This class extracts the containt of the plugin archive into a directory.
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Unzip {
 
-	private static final Logger log = LoggerFactory.getLogger(Unzip.class);
+	private static final Logger log = Logger.getLogger(Unzip.class);
 
     /**
      * Holds the destination directory.
@@ -61,7 +61,7 @@ public class Unzip {
     }
 
     public void extract() throws IOException {
-        log.debug("Extract content of '{}' to '{}'", source, destination);
+        log.debug(String.format("Extract content of '%s' to '%s'", source, destination));
 
         // delete destination file if exists
         removeDirectory(destination);
@@ -91,7 +91,7 @@ public class Unzip {
 		            fos.close();
                 }
     	    } catch (FileNotFoundException e) {
-    	    	log.error("File '{}' not found", zipEntry.getName());
+    	    	log.error(String.format("File '%s' not found", zipEntry.getName()));
     	    }
 	    }
 

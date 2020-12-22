@@ -12,11 +12,11 @@
  */
 package ro.fortsoft.pf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * The default implementation for PluginFactory.
@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
  */
 public class DefaultPluginFactory implements PluginFactory {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultExtensionFactory.class);
+    private static final Logger log = Logger.getLogger(DefaultExtensionFactory.class);
 
     /**
      * Creates a plugin instance. If an error occurs than that error is logged and the method returns null.
@@ -36,7 +36,7 @@ public class DefaultPluginFactory implements PluginFactory {
     @Override
     public Plugin create(final PluginWrapper pluginWrapper) {
         String pluginClassName = pluginWrapper.getDescriptor().getPluginClass();
-        log.debug("Create instance for plugin '{}'", pluginClassName);
+        log.debug(String.format("Create instance for plugin '%s'", pluginClassName));
 
         Class<?> pluginClass;
         try {
@@ -51,7 +51,7 @@ public class DefaultPluginFactory implements PluginFactory {
         int modifiers = pluginClass.getModifiers();
         if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)
                 || (!Plugin.class.isAssignableFrom(pluginClass))) {
-            log.error("The plugin class '{}' is not valid", pluginClassName);
+            log.error(String.format("The plugin class '%s' is not valid", pluginClassName));
             return null;
         }
 

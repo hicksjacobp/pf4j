@@ -16,10 +16,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 
 /**
  * The default implementation for ExtensionFinder.
@@ -30,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListener {
 
-	private static final Logger log = LoggerFactory.getLogger(DefaultExtensionFinder.class);
+	private static final Logger log = Logger.getLogger(DefaultExtensionFinder.class);
 
     private PluginManager pluginManager;
 	private ExtensionFactory extensionFactory;
@@ -43,14 +50,14 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
 
     @Override
 	public <T> List<ExtensionWrapper<T>> find(Class<T> type) {
-        log.debug("Checking extension point '{}'", type.getName());
+        log.debug(String.format("Checking extension point '%s'", type.getName()));
         if (!isExtensionPoint(type)) {
-            log.warn("'{}' is not an extension point", type.getName());
+            log.warn(String.format("'%s' is not an extension point", type.getName()));
 
             return Collections.emptyList(); // or return null ?!
         }
 
-		log.debug("Finding extensions for extension point '{}'", type.getName());
+		log.debug(String.format("Finding extensions for extension point '%s'", type.getName()));
         readIndexFiles();
 
         List<ExtensionWrapper<T>> result = new ArrayList<ExtensionWrapper<T>>();
@@ -74,10 +81,10 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
                     } else {
                         classLoader = getClass().getClassLoader();
                     }
-                    log.debug("Loading class '{}' using class loader '{}'", className, classLoader);
+                    log.debug(String.format("Loading class '%s' using class loader '%s'", className, classLoader));
                     Class<?> extensionClass = classLoader.loadClass(className);
 
-                    log.debug("Checking extension type '{}'", className);
+                    log.debug(String.format("Checking extension type '%s'", className));
                     if (type.isAssignableFrom(extensionClass) && extensionClass.isAnnotationPresent(Extension.class)) {
                         Extension extension = extensionClass.getAnnotation(Extension.class);
                         ExtensionDescriptor descriptor = new ExtensionDescriptor();
@@ -87,9 +94,9 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
                         ExtensionWrapper extensionWrapper = new ExtensionWrapper<T>(descriptor);
                         extensionWrapper.setExtensionFactory(extensionFactory);
                         result.add(extensionWrapper);
-                        log.debug("Added extension '{}' with ordinal {}", className, extension.ordinal());
+                        log.debug(String.format("Added extension '%s' with ordinal %s", className, extension.ordinal()));
                     } else {
-                        log.debug("'{}' is not an extension for extension point '{}'", className, type.getName());
+                        log.debug(String.format("'%s' is not an extension for extension point '%s'", className, type.getName()));
                     }
                 } catch (ClassNotFoundException e) {
                     log.error(e.getMessage(), e);
@@ -98,9 +105,9 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
         }
 
         if (entries.isEmpty()) {
-        	log.debug("No extensions found for extension point '{}'", type.getName());
+        	log.debug(String.format("No extensions found for extension point '%s'", type.getName()));
         } else {
-        	log.debug("Found {} extensions for extension point '{}'", entries.size(), type.getName());
+        	log.debug(String.format("Found %s extensions for extension point '%s'", entries.size(), type.getName()));
         }
 
         // sort by "ordinal" property
@@ -144,7 +151,7 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
             Enumeration<URL> urls = getClass().getClassLoader().getResources(ExtensionsIndexer.EXTENSIONS_RESOURCE);
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
-                log.debug("Read '{}'", url.getFile());
+                log.debug(String.format("Read '%s'", url.getFile()));
                 Reader reader = new InputStreamReader(url.openStream(), "UTF-8");
                 ExtensionsIndexer.readIndex(reader, bucket);
             }
@@ -152,7 +159,7 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
             if (bucket.isEmpty()) {
                 log.debug("No extensions found");
             } else {
-                log.debug("Found possible {} extensions:", bucket.size());
+                log.debug(String.format("Found possible %s extensions:", bucket.size()));
                 for (String entry : bucket) {
                     log.debug("   " + entry);
                 }
@@ -170,23 +177,23 @@ public class DefaultExtensionFinder implements ExtensionFinder, PluginStateListe
         List<PluginWrapper> plugins = pluginManager.getPlugins();
         for (PluginWrapper plugin : plugins) {
             String pluginId = plugin.getDescriptor().getPluginId();
-            log.debug("Reading extensions index file for plugin '{}'", pluginId);
+            log.debug(String.format("Reading extensions index file for plugin '%s'", pluginId));
             Set<String> bucket = new HashSet<String>();
 
             try {
                 URL url = plugin.getPluginClassLoader().getResource(ExtensionsIndexer.EXTENSIONS_RESOURCE);
                 if (url != null) {
-                    log.debug("Read '{}'", url.getFile());
+                    log.debug(String.format("Read '%s'", url.getFile()));
                     Reader reader = new InputStreamReader(url.openStream(), "UTF-8");
                     ExtensionsIndexer.readIndex(reader, bucket);
                 } else {
-                    log.debug("Cannot find '{}'", ExtensionsIndexer.EXTENSIONS_RESOURCE);
+                    log.debug(String.format("Cannot find '%s'", ExtensionsIndexer.EXTENSIONS_RESOURCE));
                 }
 
                 if (bucket.isEmpty()) {
                     log.debug("No extensions found");
                 } else {
-                    log.debug("Found possible {} extensions:", bucket.size());
+                    log.debug(String.format("Found possible %s extensions:", bucket.size()));
                     for (String entry : bucket) {
                         log.debug("   " + entry);
                     }
